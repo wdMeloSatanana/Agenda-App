@@ -1,0 +1,125 @@
+body{
+    background-color:rgb(180, 196, 212);
+    text-align: center;
+}
+
+#caixa-titulo{
+    margin: 15px 10px;
+    background-color: slategray;
+    border-radius: 15px;
+    display: flex;
+ }
+ 
+#caixa-calendario{
+    /*margin: auto;*/
+    background-color: #9097ff;
+ 
+    border-radius: 15px;
+    min-height: 750px;
+
+}
+ 
+#caixa-pai{
+    background-color: #9097ff;
+    text-align: center;
+    display:block;
+    margin:auto;
+    width: 700px;
+    min-height: 500px;
+    border-radius: 5px;
+}
+
+.dias{
+    border-style: solid;
+    border-color: #9097ff;
+    /*padding: 2px;*/
+    border-radius: 8px;
+    background-color: slategray;
+    display: inline-block;
+    height:150px;
+    width: 90px;
+    margin: 0px;
+}
+.dias:hover{
+    background-color: rgb(134, 150, 165);
+ }
+
+.btn{
+    display: inline-block;
+    margin: auto;
+    height: inherit;
+}
+
+button{
+    background-color: slategray;
+    border-style: solid;
+    border-color: rgb(129, 146, 163);
+    border-radius: 15px;
+}
+
+button:hover{
+    background-color: rgb(134, 150, 165);
+}
+
+#atual{
+    width:100px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.droparbtn{
+    background-color: lightblue;
+    color: white;
+    padding: 15px;
+    font-size: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.droparbtn:hover, .droparbtn:focus, .conteudoDrop a:hover {
+    background-color: lightskyblue;
+}
+
+.menuDrop{
+    position:relative;
+    display: inline-block;
+    margin: 2px ;
+}
+
+.conteudoDrop{
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+
+}
+
+.menuDrop a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.show{display:block};
+
+#btn-ant, #btn-prox {
+    font-size: 20px;
+    font-weight: bold;
+    color:rgb(255, 255, 255)
+}
+
+input,label{
+    display: block;
+    margin: 10px auto ;
+}
+form{
+    padding:100px;
+}
+
+.evento {
+    font-size: 10px;
+    color: lightgray;
+    position: relative;
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Atualizar - Agenda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="caixa-pai">
+        {% block content %}
+        <form method="post">
+          <label for="title">Title</label>
+          <input name="title" id="title"
+            value="{{ request.form['title'] or post['title'] }}" required>
+          <label for="body">Body</label>
+          <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
+          <input type="submit" value="Save">
+        </form>
+        <hr>
+        <form action="{{ url_for('delete', id=post['id']) }}" method="post">
+          <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+        </form>
+      {% endblock %}
+    </div>
+    <div>
+        {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
+    </div>
+</body>
+</html>

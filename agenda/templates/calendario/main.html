@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Agenda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="caixa-pai">
+        <nav>
+            <div id="caixa-titulo">
+                <div class="menuDrop">
+                    <button onclick="abrir()" class="droparbtn">|||</button>
+                    <div id="menuItens" class="conteudoDrop">
+                        {% if g.user %}
+                        <span>{{ g.user['username'] }}</span>
+                        <a href="{{ url_for('logout') }}">Log Out</a>
+                      {% else %}
+                        <a href="{{ url_for('registrar') }}">Register</a>
+                        <a href="{{ url_for('login') }}">Log In</a>
+                      {% endif %}
+                    </div>
+                </div>
+                <div class="btn"><button id="btn-ant" type="button" method="PUT" ><a href="{{ url_for('ant')}}"><</a></button></div>
+                <div id="btn-mes" class="btn">
+                    <button type="button" id="atual"  >
+                        {% if btnMeio %}
+                            <p class="mesAtual" >{{ btnMeio }}</p>
+                        {% endif %}
+                    </button>   
+                </div>
+                <div class="btn"><button id="btn-prox" type="button" method="PUT" ><a href="{{ url_for('prox')}}">></a>                      
+                </button></div>
+                
+            </div>
+        </nav>
+        <div id="caixa-calendario">
+            {% for dia in mes %}
+                <div class="dias"><p>{{ dia }}</p>     
+                    {% for post in posts %}
+                        {% if dia[8:10]==post['time'][8:10] %}
+                            <p class="evento">{{post['title']}} - Criado por {{post['username']}} <br> Marcado para {{ post['time'][11:16]  }} </p>
+                        {% endif %} 
+                    {% endfor %} </div>
+            {% endfor %}
+ 
+        </div>  
+    </div>
+
+ 
+
+
+ 
+    <script type="text/javascript" src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+ 

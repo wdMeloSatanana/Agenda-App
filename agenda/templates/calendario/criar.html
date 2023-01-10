@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Criar - Agenda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div id="caixa-pai">
+        {% block content %}
+        <form method="post">
+          <label for="title">Titulo</label>
+          <input name="title" id="title" value="{{ request.form['title'] }}" required>
+          <label for="body">Descrição</label>
+          <textarea name="body" id="body">{{ request.form['body'] }}</textarea>
+          <label for="time">Horário agendado:</label>
+          <input type="datetime-local" id="time"
+              name="time" value="{{ request.form['time'] }}"
+              min="2023-01-01T00:00" max="2024-12-31T00:00" required>
+          <input type="submit" value="Save">
+        </form>
+      {% endblock %}
+    </div>
+</body>
+</html>

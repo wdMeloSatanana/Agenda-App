@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> List</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css')}}">
+        <script type="text/javascript" src="{{ url_for('static', filename='js/main.js')}}" ></script>
+
+    </head>
+    <body>
+         
+
+        <div id="">
+            {% for i in conteudo %}
+                <p>Usuário: {{ i[0] }} - Senha: {{ i[1] }} </p><br>
+            {% endfor %}
+        </div>
+
+        
+     </body>
+</html>
