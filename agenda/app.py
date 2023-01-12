@@ -52,6 +52,7 @@ def ant():
     return render_template("calendario/main.html", mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
 
 
+
 @app.route('/registrar', methods=('GET', 'POST'))
 def registrar():
     if request.method == 'POST':
