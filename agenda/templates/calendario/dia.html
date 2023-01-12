@@ -36,16 +36,13 @@
         </nav>
         <div id="caixa-calendario">
             {% for dia in mes %}
-                <a class="dia-view" href="">
-                    <div class="dias">
-                        <p class="data-visualizada">{{ dia }}</p>     
-                        {% for post in posts %}
-                            {% if dia[8:10]==post['time'][8:10] %}
-                                <p class="evento">{{post['title']}} - Criado por {{post['username']}}<br>às {{ post['time'][11:16]  }} </p>
-                            {% endif %} 
-                        {% endfor %} 
-                </a>
-                </div>
+                <div class="dias"><p>{{ dia }}</p>     
+                    {% for post in posts %}
+                        {% if dia[8:10]==post['time'][8:10] %}
+                            <p class="evento">{{post['title']}} - Criado por {{post['username']}} <br> Marcado para {{ post['time'][11:16]  }} </p>
+                        {% endif %} 
+                        <a></a>
+                    {% endfor %} </div>
             {% endfor %}
  
         </div>  

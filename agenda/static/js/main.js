@@ -1,13 +1,17 @@
 let mesAtual = String((new Date().getUTCMonth()));
-const dia = document.getElementsByClassName("dias");
 let  diaJs;
+let diaExibido = document.getElementsByClassName('data-visualizada');
+let caixaDia = document.getElementsByClassName('dias');
 
-for (let i=0; i < dia.length; i++){ 
-    diaJs = String(new Date(dia[i].innerText).getUTCMonth());
+for (let i=0; i < diaExibido.length; i++){ 
+    diaJs = String(new Date(diaExibido[i].innerText).getUTCMonth());  
+      
     if (diaJs != mesAtual){
         console.log(diaJs +  "!=" + mesAtual);
-        dia[i].style.color = 'white';
+        diaExibido[i].style.color = 'lightgray';
+        caixaDia[i].style.backgroundColor = 'lightslategray';
     }
+   diaExibido[i].innerText = new Date(diaExibido[i].innerText).getUTCDate()
 }
  
 function abrir(){
@@ -26,3 +30,7 @@ window.onclick = function(event){
         }
     }
 }
+
+
+
+
