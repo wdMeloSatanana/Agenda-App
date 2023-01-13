@@ -22,6 +22,20 @@ def main():
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util()
     return render_template('calendario/main.html', posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'])
 
+@app.route('/dia/<diaDoMes>', methods=['POST', 'GET'])
+def dia(diaDoMes):
+    if diaDoMes is None:
+        abort(404)
+    db = get_db()
+    posts = db.execute(
+    'SELECT p.id, title, body, created, author_id, username, time'
+    ' FROM event p JOIN users u ON p.author_id = u.id'
+    ' ORDER BY created DESC').fetchall()
+    session['dia-visualizado'] = diaDoMes
+    return render_template('calendario/dia.html', diaVisualizado = session['dia-visualizado'], posts=posts, mesVisualizado=session['mes-visualizado'])
+
+
+
 
 @app.route("/prox", methods=["POST", "GET"])
 def prox():

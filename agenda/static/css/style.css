@@ -1,5 +1,5 @@
 body{
-    background-color:rgb(180, 196, 212);
+    background-color:rgb(183, 196, 199);
     text-align: center;
 }
 
@@ -136,6 +136,7 @@ form{
     font-size: 10px;
     color: lightgray;
     position: relative;
+
 }
 
 
@@ -159,4 +160,14 @@ a {
     border: none;
     width: 30px;
     text-align: right;
+}
+
+.evento-corpo{
+    display: block;
+    background-color: slategray;
+    width: 500px;
+    margin: 20px ;
+    border-radius: 15px;
+    height: 150px;
+    border: solid rgb(100, 100, 100);
 }

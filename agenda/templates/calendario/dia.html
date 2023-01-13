@@ -24,8 +24,8 @@
                 <div class="btn"><button id="btn-ant" type="button" method="PUT" ><a href="{{ url_for('ant')}}"><</a></button></div>
                 <div id="btn-mes" class="btn">
                     <button type="button" id="atual"  >
-                        {% if btnMeio %}
-                            <p class="mesAtual" >{{ btnMeio }}</p>
+                        {% if mesVisualizado %}
+                            <p class="mesAtual" >{{ diaVisualizado+"/"+mesVisualizado }}</p>
                         {% endif %}
                     </button>   
                 </div>
@@ -35,14 +35,18 @@
             </div>
         </nav>
         <div id="caixa-calendario">
-            {% for dia in mes %}
-                <div class="dias"><p>{{ dia }}</p>     
-                    {% for post in posts %}
-                        {% if dia[8:10]==post['time'][8:10] %}
-                            <p class="evento">{{post['title']}} - Criado por {{post['username']}} <br> Marcado para {{ post['time'][11:16]  }} </p>
-                        {% endif %} 
+            {% for post in posts %}
+                {% if post['time'][8:10]==diaVisualizado %}
+                    <div class="evento-corpo">     
+                            <p class="evento-titulo">{{post['title']}} - Criado por {{post['username']}}
+                            <br><p class="evento-descricao">Descrição: {{ post['body']  }}</p> 
+                            <br><p class="evento-target">Marcado para {{ post['time'][11:16]  }} </p>
+                            {% if g.user['id'] == post['author_id'] %}
+                                <a class="action" href="{{ url_for('update', id=post['id']) }}">Edit</a>
+                            {% endif %}
                         <a></a>
-                    {% endfor %} </div>
+                     </div>
+                {% endif %}
             {% endfor %}
  
         </div>  
