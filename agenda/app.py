@@ -6,13 +6,9 @@ from werkzeug.exceptions import abort
 app = Flask(__name__)
 app.secret_key = "dev"
 
-@app.route("/", methods=["POST", "GET"])
-def index():
-    session['conteudo']  = get_db_as_tuple()
-    return render_template("index.html", conteudo=session['conteudo'])
 
-@app.route("/main")
-def main():
+@app.route("/")
+def index():
     db = get_db()
     posts = db.execute(
         'SELECT p.id, title, body, created, author_id, username, time'
@@ -20,7 +16,7 @@ def main():
         ' ORDER BY created DESC').fetchall()
     #if not (session.get('data-visualizada') and session.get('mes-objeto') and session.get('mes-visualizado')):
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util()
-    return render_template('calendario/main.html', posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'])
+    return render_template('calendario/index.html', posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'])
 
 @app.route('/dia/<diaDoMes>', methods=['POST', 'GET'])
 def dia(diaDoMes):
@@ -49,7 +45,7 @@ def prox():
 
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util(nova)
     session.modified = True
-    return render_template("calendario/main.html", mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
+    return render_template("calendario/index.html", mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
 
 @app.route("/ant", methods=["POST", "GET"])
 def ant():
@@ -63,7 +59,7 @@ def ant():
 
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util(nova)
     session.modified = True
-    return render_template("calendario/main.html", mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
+    return render_template("calendario/index.html", mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
 
 
 
@@ -116,7 +112,7 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            return redirect(url_for('main'))
+            return redirect(url_for('index'))
 
         flash(error)
 
@@ -138,7 +134,7 @@ def load_logged_in_user():
 @app.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('main'))
+    return redirect(url_for('index'))
 
 
 def login_required(view):
@@ -196,7 +192,7 @@ def create():
                 (title, body, g.user['id'], timestamp),
             )
             db.commit()
-            return redirect(url_for('main'))
+            return redirect(url_for('index'))
 
     return render_template('calendario/criar.html')
 
@@ -240,7 +236,7 @@ def update(id):
             )
 
             db.commit()
-            return redirect(url_for('main'))
+            return redirect(url_for('index'))
 
     return render_template('calendario/atualizar.html', post=post)
 
@@ -252,7 +248,7 @@ def delete(id):
     db = get_db()
     db.execute('DELETE FROM event WHERE id = ?', (id,))
     db.commit()
-    return redirect(url_for('main'))
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
