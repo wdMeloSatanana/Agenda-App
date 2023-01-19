@@ -14,6 +14,10 @@
             value="{{ request.form['title'] or post['title'] }}" required>
           <label for="body">Body</label>
           <textarea name="body" id="body">{{ request.form['body'] or post['body'] }}</textarea>
+          <label for="time">Horário agendado:</label>
+          <input type="datetime-local" id="time"
+              name="time" value="{{ request.form['time'] or post['time'] }}"
+              min="2023-01-01T00:00" max="2024-12-31T00:00" required>
           <input type="submit" value="Save">
         </form>
         <hr>

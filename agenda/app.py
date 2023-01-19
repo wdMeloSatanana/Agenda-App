@@ -1,19 +1,25 @@
 from flask import Flask, session, render_template, request, g,redirect,url_for, flash
-import sqlite3 , datetime,calendar, functools, calendario
+import datetime, functools, calendario
 from werkzeug.security import check_password_hash, generate_password_hash 
 from werkzeug.exceptions import abort
+from database import get_db
 
 app = Flask(__name__)
 app.secret_key = "dev"
 
+# @app.route('/base', methods=['GET'])
+# def users():
+#     conteudo = get_db_as_tuple()
+#     return render_template('base.html', conteudo=conteudo)
 
 @app.route("/")
 def index():
-    db = get_db()
-    posts = db.execute(
+    db = get_db().cursor(dictionary=True)
+    db.execute(
         'SELECT p.id, title, body, created, author_id, username, time'
         ' FROM event p JOIN users u ON p.author_id = u.id'
-        ' ORDER BY created DESC').fetchall()
+        ' ORDER BY created DESC')
+    posts = db.fetchall()
     #if not (session.get('data-visualizada') and session.get('mes-objeto') and session.get('mes-visualizado')):
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util()
     return render_template('calendario/index.html', posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'])
@@ -22,11 +28,12 @@ def index():
 def dia(diaDoMes):
     if diaDoMes is None:
         abort(404)
-    db = get_db()
-    posts = db.execute(
+    db = get_db().cursor(dictionary=True)
+    db.execute(
     'SELECT p.id, title, body, created, author_id, username, time'
     ' FROM event p JOIN users u ON p.author_id = u.id'
-    ' ORDER BY created DESC').fetchall()
+    ' ORDER BY created DESC')
+    posts = db.fetchall()
     session['dia-visualizado'] = diaDoMes
     return render_template('calendario/dia.html', diaVisualizado = session['dia-visualizado'], posts=posts, mesVisualizado=session['mes-visualizado'])
 
@@ -79,12 +86,12 @@ def registrar():
         
         if error is None:
             try:
-                db.execute(
-                    "INSERT INTO users (username, password) VALUES(?,?)",
+                db.cursor(dictionary=True).execute(
+                    "INSERT INTO users (username, password) VALUES(%s,%s)",
                     (username, generate_password_hash(password)),
                 )
                 db.commit()
-            except db.IntegrityError:
+            except:
                 error = f"Usuário {username} já registrado."
             else:
                 return redirect(url_for("login"))
@@ -97,12 +104,12 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
+        db = get_db().cursor(dictionary=True)
         error = None
         user = db.execute(
-            'SELECT * FROM users WHERE username = ?', (username,)
-        ).fetchone()
-
+            'SELECT * FROM users WHERE username = %s ', (username,)
+        )
+        user = db.fetchone()
 
         if user is None:
             error = 'Nome de usuário incorreto.'
@@ -126,9 +133,10 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM users WHERE id = ?', (user_id,)
-        ).fetchone()
+        cursor =  get_db().cursor(dictionary=True)
+        cursor.execute(
+            'SELECT * FROM users WHERE id = %s', (user_id,))
+        g.user = cursor.fetchone()
 
 
 @app.route('/logout')
@@ -147,24 +155,24 @@ def login_required(view):
 
     return wrapped_view
 
-def get_db_as_tuple():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g.database = sqlite3.connect('users.db')
-        cursor = db.cursor()
-        cursor.execute("select username, password from users")
-        dados = cursor.fetchall()
-        for i in dados:
-            print(i)
-        dados = [(str(val[0]), str(val[1])) for val in dados]
+# def get_db_as_tuple():
+#     db = getattr(g, '_database', None)
+#     if db is None:
+#         db = g.database = sqlite3.connect('users.db')
+#         cursor = db.cursor()
+#         cursor.execute("select username, password from users")
+#         dados = cursor.fetchall()
+#         for i in dados:
+#             print(i)
+#         dados = [(str(val[0]), str(val[1])) for val in dados]
 
-    return dados
+#     return dados
 
-def get_db():
-    if 'db' not in g:
-        g.db = sqlite3.connect('users.db')
-        g.db.row_factory = sqlite3.Row
-    return g.db
+# def get_db():
+#     if 'db' not in g:
+#         g.db = sqlite3.connect('users.db')
+#         g.db.row_factory = sqlite3.Row
+#     return g.db
 
  
 
@@ -186,9 +194,9 @@ def create():
             flash(error)
         else:
             db = get_db()
-            db.execute(
+            db.cursor(dictionary=True).execute(
                 'INSERT INTO event (title, body, author_id, time)'
-                ' VALUES (?, ?, ?, ?)',
+                ' VALUES (%s, %s, %s, %s)',
                 (title, body, g.user['id'], timestamp),
             )
             db.commit()
@@ -197,12 +205,14 @@ def create():
     return render_template('calendario/criar.html')
 
 def get_post(id, check_author=True):
-    post = get_db().execute(
+    cursor = get_db().cursor(dictionary=True)
+    cursor.execute(
         'SELECT p.id, title, body, created, author_id, username'
         ' FROM event p JOIN users u ON p.author_id = u.id'
-        ' WHERE p.id = ?',
+        ' WHERE p.id = %s',
         (id,)
-    ).fetchone()
+    )
+    post = cursor.fetchone()
 
     if post is None:
         abort(404, f"Post id {id} doesn't exist.")
@@ -229,9 +239,9 @@ def update(id):
             flash(error)
         else:
             db = get_db()
-            db.execute(
-                'UPDATE event SET title = ?, body = ?'
-                ' WHERE id = ?',
+            db.cursor().execute(
+                'UPDATE event SET title = %s, body = %s'
+                ' WHERE id = %s',
                 (title, body, id)
             )
 
@@ -246,7 +256,7 @@ def update(id):
 def delete(id):
     get_post(id)
     db = get_db()
-    db.execute('DELETE FROM event WHERE id = ?', (id,))
+    db.cursor().execute('DELETE FROM event WHERE id = %s', (id,))
     db.commit()
     return redirect(url_for('index'))
 
