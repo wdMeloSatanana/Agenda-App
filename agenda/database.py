@@ -1,11 +1,11 @@
 import mysql.connector
-from flask import current_app, g
+from flask import g
 
 
 mydb = mysql.connector.connect(
     host='localhost', 
     user='root',
-    password='root57'
+    password='ajk9?SXXHDg&Ty9!'
 )
 
 print('Conectado a base de dados')
@@ -32,7 +32,7 @@ def get_db():
         g.db = mysql.connector.connect(
                 host='localhost', 
                 user='root',
-                password='root57',
+                password='ajk9?SXXHDg&Ty9!',
                 database='users'
                 )
         
