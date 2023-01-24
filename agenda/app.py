@@ -7,20 +7,9 @@ from database import get_db
 app = Flask(__name__)
 app.secret_key = "dev"
 
-# @app.route('/base', methods=['GET'])
-# def users():
-#     conteudo = get_db_as_tuple()
-#     return render_template('base.html', conteudo=conteudo)
-
 @app.route("/")
 def index():
-    db = get_db().cursor(dictionary=True)
-    db.execute(
-        'SELECT p.id, title, body, created, author_id, username, time'
-        ' FROM event p JOIN users u ON p.author_id = u.id'
-        ' ORDER BY created DESC')
-    posts = db.fetchall()
-    #if not (session.get('data-visualizada') and session.get('mes-objeto') and session.get('mes-visualizado')):
+    posts = dbPosts()
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util()
     return render_template('calendario/index.html', posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'])
 
@@ -28,12 +17,7 @@ def index():
 def dia(diaDoMes):
     if diaDoMes is None:
         abort(404)
-    db = get_db().cursor(dictionary=True)
-    db.execute(
-    'SELECT p.id, title, body, created, author_id, username, time'
-    ' FROM event p JOIN users u ON p.author_id = u.id'
-    ' ORDER BY created DESC')
-    posts = db.fetchall()
+    posts = dbPosts()
     session['dia-visualizado'] = diaDoMes
     return render_template('calendario/dia.html', diaVisualizado = session['dia-visualizado'], posts=posts, mesVisualizado=session['mes-visualizado'])
 
@@ -44,7 +28,7 @@ def dia(diaDoMes):
 def prox():
     nova = session['data-visualizada']
     nova = datetime.datetime.strptime(nova, '%Y-%m-%d').date()
-
+    posts = dbPosts()
     if nova.month == 12:
         nova = datetime.datetime(nova.year + 1, 1, 1)
     else:
@@ -52,13 +36,13 @@ def prox():
 
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util(nova)
     session.modified = True
-    return render_template("calendario/index.html", mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
+    return render_template("calendario/index.html", posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
 
 @app.route("/ant", methods=["POST", "GET"])
 def ant():
     nova = session['data-visualizada']
     nova = datetime.datetime.strptime(nova, '%Y-%m-%d').date()
-     
+    posts = dbPosts()
     if nova.month == 1:
         nova = datetime.datetime(nova.year - 1, 12, 1)
     else:
@@ -66,7 +50,7 @@ def ant():
 
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util(nova)
     session.modified = True
-    return render_template("calendario/index.html", mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
+    return render_template("calendario/index.html", posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
 
 
 
