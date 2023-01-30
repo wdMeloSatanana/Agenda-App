@@ -1,16 +1,18 @@
 import mysql.connector
 from flask import g
-from decouple import config
+from dotenv import dotenv_values
+
+config = dotenv_values(".env")
 
 
 mydb = mysql.connector.connect(
-    host='localhost', 
-    user=config('user'),
-    password=config('pass')
+    host='localhost',
+    user=config['DB_USER'],
+    password=config['DB_PASS']
 )
 
 print('Conectado a base de dados')
- 
+
 
 if mydb.is_connected():
     db_info = mydb.get_server_info()
@@ -26,17 +28,17 @@ if mydb.is_connected():
         cursor.execute("CREATE TABLE event (id INTEGER PRIMARY KEY AUTO_INCREMENT, author_id INTEGER NOT NULL, CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(), title TEXT NOT NULL, body TEXT NOT NULL, time TEXT NOT NULL, FOREIGN KEY (author_id) REFERENCES users (id))")
         print("base")
         mydb.commit()
-    mydb.database='users'   
+    mydb.database='users'
 
 def get_db():
     if 'db' not in g:
         g.db = mysql.connector.connect(
-                host='localhost', 
-                user=config('user'),
-                password=config('pass'),
+                host='localhost',
+                user=config['DB_USER'],
+                password=config['DB_PASS'],
                 database='users'
                 )
-        
+
     return g.db
 
 def dbPosts():
@@ -49,9 +51,9 @@ def dbPosts():
     return posts
 
 
-# if mydb.is_connected():
-#     cursor.close()
-#     mydb.close()
-#     print("Conexão MySQL encerrada.")
+if mydb.is_connected():
+    cursor.close()
+    mydb.close()
+    print("Conexão MySQL encerrada.")
 
 
