@@ -1,5 +1,5 @@
 body{
-    background-color:rgb(183, 196, 199);
+    background-color:rgb(0, 0, 0);
     text-align: center;
 }
 
@@ -134,8 +134,9 @@ form{
     /*margin: 15px;
     width: 85px; */
     font-size: 10px;
-    color: lightgray;
+    color: rgb(15, 15, 15);
     position: relative;
+    /*background-color: aqua;*/
 
 }
 
@@ -169,5 +170,5 @@ a {
     margin: 20px ;
     border-radius: 15px;
     height: 150px;
-    border: solid rgb(100, 100, 100);
+
 }
