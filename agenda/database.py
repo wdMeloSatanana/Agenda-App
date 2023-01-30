@@ -1,11 +1,12 @@
 import mysql.connector
 from flask import g
+from decouple import config
 
 
 mydb = mysql.connector.connect(
     host='localhost', 
-    user='root',
-    password='ajk9?SXXHDg&Ty9!'
+    user=config('user'),
+    password=config('pass')
 )
 
 print('Conectado a base de dados')
@@ -31,13 +32,23 @@ def get_db():
     if 'db' not in g:
         g.db = mysql.connector.connect(
                 host='localhost', 
-                user='root',
-                password='ajk9?SXXHDg&Ty9!',
+                user=config('user'),
+                password=config('pass'),
                 database='users'
                 )
         
     return g.db
- 
+
+def dbPosts():
+    db = get_db().cursor(dictionary=True)
+    db.execute(
+        'SELECT p.id, title, body, created, author_id, username, time'
+        ' FROM event p JOIN users u ON p.author_id = u.id'
+        ' ORDER BY created DESC')
+    posts = db.fetchall()
+    return posts
+
+
 # if mydb.is_connected():
 #     cursor.close()
 #     mydb.close()
