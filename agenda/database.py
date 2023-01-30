@@ -1,11 +1,13 @@
 import mysql.connector
 from flask import current_app, g
+from dotenv import dotenv_values
 
+config=dotenv_values(".env")
 
 mydb = mysql.connector.connect(
     host='localhost', 
-    user='root',
-    password='root57'
+    user=config['DB_USER'],
+    password=config['DB_PASS']
 )
 
 print('Conectado a base de dados')
@@ -31,16 +33,16 @@ def get_db():
     if 'db' not in g:
         g.db = mysql.connector.connect(
                 host='localhost', 
-                user='root',
-                password='root57',
+                user=config['DB_USER'],
+                password=config['DB_PASS'],
                 database='users'
                 )
         
     return g.db
  
-# if mydb.is_connected():
-#     cursor.close()
-#     mydb.close()
-#     print("Conexão MySQL encerrada.")
+if mydb.is_connected():
+    cursor.close()
+    mydb.close()
+    print("Conexão MySQL encerrada.")
 
 
