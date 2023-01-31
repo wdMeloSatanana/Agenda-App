@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request, g,redirect,url_for, flash
+from flask import Flask, session, render_template, request, g, redirect,url_for, flash
 import datetime, auth, calendario
 from werkzeug.security import check_password_hash, generate_password_hash 
 from werkzeug.exceptions import abort
@@ -7,10 +7,11 @@ from database import get_db, dbPosts
 app = Flask(__name__)
 app.secret_key = "dev"
 
-app.register_blueprint(auth.bp)
+app.register_blueprint(auth.bp, url_prefix='/auth')
 
 @app.route("/")
 def index():
+ 
     posts = dbPosts()
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util()
     return render_template('calendario/index.html', posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'])

@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from database import get_db
 
-bp = Blueprint('auth', __name__, url_prefix='/auth')
+bp = Blueprint('auth', __name__)
 
 
 
@@ -61,8 +61,10 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-            print("Usuario na sessao")
+            print("Usuario na sessao: ")
             print(g.user)
+            print('Usuário logado - id ')
+            print(session['user_id'])
             return redirect(url_for('index'))
 
         flash(error)
@@ -92,6 +94,8 @@ def logout():
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
+        print("Check no g.user")
+        print(g.user)
         if g.user is None:
             return redirect(url_for('auth.login'))
 
