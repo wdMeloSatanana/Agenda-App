@@ -1,18 +1,21 @@
 site_name: Agenda
-site_url: https://www.callendarwdmelosantana.com
+site_url: https://wdmelosatanana.github.io/Agenda-App/
+extra_css:  [extra.css]
 nav:
  - Home: index.md
- - Requisitos Funcionais: req-funcionais.md
- - Requisitos Não-Funcionais: req-nao-func.md
- - Regras de Negócio: regras-negocio.md
- - Casos de Uso: casos-de-uso.md
- - Casos de Uso NNN: uc-nnn.md
- - System Metaphor: sm.md
- - UX: ux.md
- - Fluxo de telas: fluxo-telas.md
- - Entidade Relacionamento: er.md
- - Dicionário de Dados: dic-dados.md
- - Diagrama C4: c4.md
+ - Requisitos: 
+    - Requisitos Funcionais: req-funcionais.md
+    - Requisitos Não-Funcionais: req-nao-func.md
+    - Regras de Negócio: regras-negocio.md
+    - Casos de Uso: casos-de-uso.md
+    - Casos de Uso NNN: uc-nnn.md
+    - System Metaphor: sm.md
+    - UX: ux.md
+    - Fluxo de telas: fluxo-telas.md
+ - Análise & Projeto:
+    - Entidade Relacionamento: er.md
+    - Dicionário de Dados: dic-dados.md
+    - Diagrama C4: c4.md
  
  
-theme: readthedocs
+theme: windmill
