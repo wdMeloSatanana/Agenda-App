@@ -1,6 +1,7 @@
 # Agenda-App
 Projeto individual para a matéria de Modelagem e Projeto de Sistemas da UEA
-<a href="https://wdmelosatanana.github.io/Agenda-App">Documentação.</a>
+
+[Documentação](https://wdmelosatanana.github.io/Agenda-App)
 
 <h1>Tecnologias</h1>
 <h2>Server</h1>
