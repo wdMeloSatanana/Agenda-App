@@ -61,10 +61,13 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
+            load_logged_in_user()
             print("Usuario na sessao: ")
             print(g.user)
             print('Usuário logado - id ')
             print(session['user_id'])
+            session.modified = True
+             
             return redirect(url_for('index'))
 
         flash(error)
@@ -95,9 +98,11 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         print("Check no g.user")
-        print(g.user)
-        if g.user is None:
-            return redirect(url_for('auth.login'))
+        if g.user == None:
+            if session['user_id'] is not None:
+                load_logged_in_user()
+            else:
+                return redirect(url_for('auth.login'))
 
         return view(**kwargs)
 

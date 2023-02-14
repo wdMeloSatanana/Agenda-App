@@ -1,17 +1,16 @@
 from flask import Flask, session, render_template, request, g, redirect,url_for, flash
-import datetime, auth, calendario
-from werkzeug.security import check_password_hash, generate_password_hash 
+import datetime, calendario, auth
 from werkzeug.exceptions import abort
 from database import get_db, dbPosts
+from auth import login_required
 
 app = Flask(__name__)
 app.secret_key = "dev"
 
-app.register_blueprint(auth.bp, url_prefix='/auth')
 
 @app.route("/")
 def index():
- 
+    auth.load_logged_in_user()
     posts = dbPosts()
     session['data-visualizada'], session['mes-visualizado'], session['mes-objeto'] = calendario.data_util()
     return render_template('calendario/index.html', posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'])
@@ -56,95 +55,8 @@ def ant():
     return render_template("calendario/index.html", posts=posts, mes=session['mes-objeto'], btnMeio = session['mes-visualizado'], dataVis=session['data-visualizada'])
 
 
-
-# @app.route('/registrar', methods=('GET', 'POST'))
-# def registrar():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-#         db = get_db()
-#         error = None
-
-#         if not username:
-#             error = "Nome de usuário deve ser preenchido"
-#         elif not password:
-#             error = "Senha deve ser preenchida"
-
-        
-#         if error is None:
-#             try:
-#                 db.cursor(dictionary=True).execute(
-#                     "INSERT INTO users (username, password) VALUES(%s,%s)",
-#                     (username, generate_password_hash(password)),
-#                 )
-#                 db.commit()
-#             except:
-#                 error = f"Usuário {username} já registrado."
-#             else:
-#                 return redirect(url_for("login"))
-    
-#     return render_template('auth/registrar.html')
-
-
-# @app.route('/login', methods=("GET", "POST"))
-# def login():
-#     if request.method == 'POST':
-#         username = request.form['username']
-#         password = request.form['password']
-#         db = get_db().cursor(dictionary=True)
-#         error = None
-#         user = db.execute(
-#             'SELECT * FROM users WHERE username = %s ', (username,)
-#         )
-#         user = db.fetchone()
-
-#         if user is None:
-#             error = 'Nome de usuário incorreto.'
-#         elif not check_password_hash(user['password'], password):
-#             error = 'Senha incorreto.'
-
-#         if error is None:
-#             session.clear()
-#             session['user_id'] = user['id']
-#             return redirect(url_for('index'))
-
-#         flash(error)
-
-#     return render_template('auth/login.html')
-
-
-# @app.before_request
-# def load_logged_in_user():
-#     user_id = session.get('user_id')
-
-#     if user_id is None:
-#         g.user = None
-#     else:
-#         cursor =  get_db().cursor(dictionary=True)
-#         cursor.execute(
-#             'SELECT * FROM users WHERE id = %s', (user_id,))
-#         g.user = cursor.fetchone()
-
-
-# @app.route('/logout')
-# def logout():
-#     session.clear()
-#     return redirect(url_for('index'))
-
-
-# def login_required(view):
-#     @functools.wraps(view)
-#     def wrapped_view(**kwargs):
-#         if g.user is None:
-#             return redirect(url_for('login'))
-
-#         return view(**kwargs)
-
-#     return wrapped_view
-
-
 @app.route('/criar', methods=('GET', 'POST'))
-@auth.login_required
+@login_required
 def create():
     if request.method == 'POST':
         title = request.form['title']
@@ -190,7 +102,7 @@ def get_post(id, check_author=True):
     return post
 
 @app.route('/<int:id>/atualizar', methods=('GET', 'POST'))
-@auth.login_required
+@login_required
 def update(id):
     post = get_post(id)
 
@@ -219,7 +131,7 @@ def update(id):
 
     
 @app.route('/<int:id>/delete', methods=('POST',))
-@auth.login_required
+@login_required
 def delete(id):
     get_post(id)
     db = get_db()
@@ -227,6 +139,7 @@ def delete(id):
     db.commit()
     return redirect(url_for('index'))
 
+app.register_blueprint(auth.bp, url_prefix='/auth')
 
  
 if __name__ == '__main__':
